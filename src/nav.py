@@ -4,6 +4,7 @@ from ui import print_error, print_title, print_line
 from handlers.handle_all import handle_all
 from handlers.handle_help import handle_help
 from handlers.handle_hello import handle_hello 
+from handlers.handle_birthdays import handle_birthdays
 
 __command_handlers = {
     "hello": handle_hello,
@@ -14,7 +15,7 @@ __command_handlers = {
     "all": handle_all,
     # "add-birthday": add_birthday,
     # "show-birthday": show_birthday,
-    # "birthdays": birthdays,
+    "birthdays": handle_birthdays,
 }
 
 def __print_menu() -> None:
