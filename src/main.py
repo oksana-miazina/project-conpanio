@@ -1,9 +1,15 @@
-from colorama import Fore, Style, init
+from colorama import init
+from nav import start_nav, ExitException
+from data import load_data, save_data
 
-def main():
-    init(autoreset=True)
-    print(f"{Fore.GREEN}{Style.BRIGHT}Hello, World!")
-    print(f"{Fore.BLUE}This is a simple colorful console app!")
+def main() -> None:
+    init(autoreset=True)  # for colorama (cross-platform color support)
+    book = load_data()
+
+    try:
+       start_nav(book)
+    except ExitException:
+       save_data(book)
 
 if __name__ == "__main__":
     main()
