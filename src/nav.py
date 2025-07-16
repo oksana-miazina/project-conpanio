@@ -1,13 +1,17 @@
 from typing import List, Tuple
 from handlers.handle_add import handle_add
 from ui import print_error, print_title, print_line
+from handlers.handle_all import handle_all
+from handlers.handle_help import handle_help
+from handlers.handle_hello import handle_hello 
 
 __command_handlers = {
-    # "hello": handle_hello,
+    "hello": handle_hello,
+    "help": handle_help,
     "add": handle_add,
     # "change": handle_change,
     # "phone": handle_phone,
-    # "all": handle_all,
+    "all": handle_all,
     # "add-birthday": add_birthday,
     # "show-birthday": show_birthday,
     # "birthdays": birthdays,
@@ -16,6 +20,7 @@ __command_handlers = {
 def __print_menu() -> None:
     print_title("Available commands:")
     print_line("  hello                 - Greet the assistant.")
+    print_line("  help                  - Print all commands")
     print_line("  add [name] [phone]    - Add a new contact.")
     print_line("  change [name] [phone] - Change phone number of existing contact.")
     print_line("  phone [name]          - Show phone number of a contact.")
