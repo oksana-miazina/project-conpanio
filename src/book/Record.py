@@ -4,25 +4,25 @@ from book.Fields import Name, LastName, Phone, Email, Birthday, Note, Tag
 class Record:
     
     def __init__(self, name: Name):
-        self.name = Name
+        self.name = name
         self.last_name = None
-        self.phone = None
-        self.email = None
+        self.phones = []
+        self.emails = []
         self.birthday = None
         self.notes = []
-        self.tags = None
+        self.tags = []
 
     def add_LastName(self,last_name):
         self.last_name.append(LastName(last_name))
 
-    def add_phone(self,phone):
-        self.phone.append(Phone(phone))
+    def add_phone(self,phones):
+        self.phones.append(Phone(phones))
 
-    def add_email(self,email):
-        self.email.append(Email(email))
+    def add_email(self,emails):
+        self.emails.append(Email(emails))
 
     def add_birthday(self,birthday):
-        self.birthday.append(Birthday(birthday))
+        self.birthday = Birthday(birthday)
         
     def add_note(self, note):
         self.notes.append(Note(note))

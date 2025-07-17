@@ -19,7 +19,7 @@ def handle_add(args: List[str], book: AddressBook) -> str:
   except ValueError as e:
     return f"Error: {e}" 
   
-  existing_record = book.get(name.value)
+  existing_record = book.find(name.value)
 
   if existing_record:
     try:
