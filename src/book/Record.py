@@ -5,7 +5,7 @@ class Record:
     
     def __init__(self, name: Name):
         self.name = name
-        self.last_name = None
+        self.last_name = []
         self.phones = []
         self.emails = []
         self.birthday = None
