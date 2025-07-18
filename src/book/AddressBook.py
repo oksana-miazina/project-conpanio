@@ -13,4 +13,11 @@ class AddressBook:
 
   def find(self, name: str):
     return self.dict.get(name.capitalize())
+  
+  def delete(self, name: str) -> bool:
+        key = name.capitalize()
+        if key in self.dict:
+            del self.dict[key]
+            return True
+        return False
 
