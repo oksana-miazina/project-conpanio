@@ -8,6 +8,8 @@ from handlers.handle_hello import handle_hello
 from handlers.handle_find import handle_find
 from handlers.handle_change import handle_change
 from handlers.handle_delete import handle_delete
+from handlers.handle_birthdays import handle_birthdays
+
 __command_handlers = {
     "hello": handle_hello,
     "help": handle_help,
@@ -19,7 +21,7 @@ __command_handlers = {
     "all": handle_all,
     # "add-birthday": add_birthday,
     # "show-birthday": show_birthday,
-    # "birthdays": birthdays,
+    "birthdays": handle_birthdays,
 }
 
 def __print_menu() -> None:
