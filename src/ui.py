@@ -21,3 +21,15 @@ def print_title(text: str) -> None:
 
 def print_line(text: str) -> None:
     color_print(text, COLOR_COMMAND)
+
+def print_menu() -> None:
+    print_title("Available commands:")
+    print_line("  hello                 - Greet the assistant.")
+    print_line("  add [name] [phone]    - Add a new contact.")
+    print_line("  change [name]         - Change contact.")
+    print_line("  delete [name]         - Delete contact.")
+    print_line("  all                   - Show all contacts.")
+    print_line("  find [name]           - Find  contacts and show.")
+    print_line("  birthdays             - Show upcoming birthdays.")
+    print_line("  help                  - Print all commands")
+    print_line("  exit, close           - Exit the assistant.")

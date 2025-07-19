@@ -1,15 +1,17 @@
-# Hello App
+# Conpanio - Console Assistant
 
-A simple Python console app that prints a colorful hello message.
+A simple but powerful console assistant bot for managing your contacts.
 
-## Install
+## Installation
+
+Navigate to the project's root directory and run the following command. This will install the application and all necessary dependencies, making the `conpanio` command available in your terminal.
 
 ```bash
 pip install .
 ```
 
-## Run
-
+## Usage 
+After installation, you can run the assistant from anywhere in your system by simply typing:
 ```bash
-hello
+conpanio
 ```
