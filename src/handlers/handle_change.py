@@ -65,8 +65,7 @@ def handle_change(args: List[str], book: AddressBook) -> str:
     new_name = input(f"Name [{record.name.value}]: ").strip()
     if new_name and new_name.capitalize() != record.name.value:
         try:
-            if not book.rename_contact(record, new_name):
-                print(f"Error: Name '{new_name.capitalize()}' is already taken. Name was not changed.")
+            book.rename_contact(record, new_name)
         except ValueError as e:
             print(f"Error: {e}. Name was not changed.")
 

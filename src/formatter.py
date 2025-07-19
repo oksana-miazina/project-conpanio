@@ -1,7 +1,6 @@
 from typing import List
 from book import Record
 
-
 TABLE_CONFIG = {
     "name": {"display": "First Name", "width": 15},
     "last_name": {"display": "Last Name", "width": 15},
@@ -13,13 +12,11 @@ TABLE_CONFIG = {
 }
 
 def _truncate(text: str, width: int) -> str:
-    """Truncates text to a given width, adding '...' if necessary."""
     if len(text) <= width:
         return text
     return text[:width - 3] + "..." if width > 3 else text[:width]
 
 def _format_record_to_rows(record: Record) -> list[str]:
-    """Helper function to format a single record into table rows."""
     name_col = [_truncate(record.name.value, TABLE_CONFIG["name"]["width"])]
     last_name_col = [_truncate(record.last_name.value if record.last_name else "", TABLE_CONFIG["last_name"]["width"])]
     phones_col = [_truncate(p.value, TABLE_CONFIG["phones"]["width"]) for p in record.phones] or [""]

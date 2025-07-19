@@ -22,23 +22,17 @@ class AddressBook:
             return True
         return False
 
-  def rename_contact(self, record: Record, new_name_str: str) -> bool:
-      """
-      Safely updates a record's name, which is its key in the address book.
-      This is an atomic operation: it checks for conflicts, then re-inserts the record.
-      Returns True on success, False if the new name is already taken.
-      """
+  def rename_contact(self, record: Record, new_name_str: str) -> None:
       old_name_key = record.name.value
       new_name_obj = Name(new_name_str)
       new_name_key = new_name_obj.value
 
       if old_name_key == new_name_key:
-          return True
+          return # No change needed
 
       if new_name_key in self.dict:
-          return False
+          raise ValueError(f"Contact with name '{new_name_key}' already exists.")
 
       del self.dict[old_name_key]
       record.name = new_name_obj
       self.dict[new_name_key] = record
-      return True

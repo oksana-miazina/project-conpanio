@@ -3,13 +3,13 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hello-app"
+name = "conpanio"
 version = "0.1.0"
-description = "Simple colorful hello app"
+description = "A console assistant bot for managing contacts."
 requires-python = ">=3.8"
 dependencies = [
     "colorama>=0.4.6"
 ]
 
 [project.scripts]
-hello = "main:main"
+conpanio = "main:main"
