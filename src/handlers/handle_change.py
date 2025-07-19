@@ -1,6 +1,5 @@
 from typing import List
-from book.AddressBook import AddressBook
-from handlers.handle_find import format_record  # для виводу контакту
+from book import AddressBook, Record
 
 def handle_change(args: List[str], book: AddressBook) -> str:
     if not args:
@@ -54,32 +53,33 @@ def handle_change(args: List[str], book: AddressBook) -> str:
             print("Invalid input. Try again.")
 
     print("Found this contact:")
-    print(format_record(record))
+    print(record)
     change_confirm = input("Do you want to change this contact? (y/n): ").strip().lower()
     if change_confirm not in ('y', 'yes'):
         return "Change cancelled. Returning to main menu."
 
     print("Leave empty to keep current value, enter a single space to clear the value.")
 
-    # Редагування полів:
-    # Ім'я
+    # Редагування полів:    
+    # Ім'я (Критична секція: оновлення ключа в словнику)
     new_name = input(f"Name [{record.name.value}]: ").strip()
-    if new_name == " ":
-        record.name.value = ""
-    elif new_name:
-        record.name.value = new_name.capitalize()
+    if new_name and new_name.capitalize() != record.name.value:
+        try:
+            if not book.rename_contact(record, new_name):
+                print(f"Error: Name '{new_name.capitalize()}' is already taken. Name was not changed.")
+        except ValueError as e:
+            print(f"Error: {e}. Name was not changed.")
 
     # Прізвище
-    current_last_name = record.last_name[0].value if record.last_name else ""
+    current_last_name = record.last_name.value if record.last_name else ""
     new_last_name = input(f"Last Name [{current_last_name}]: ").strip()
     if new_last_name == " ":
-        if record.last_name:
-            record.last_name.pop(0)
+        record.remove_last_name()
     elif new_last_name:
-        if record.last_name:
-            record.last_name[0].value = new_last_name.capitalize()
-        else:
-            record.add_LastName(new_last_name.capitalize())
+        try:
+            record.add_last_name(new_last_name)
+        except ValueError as e:
+            print(f"Error: {e}")
 
     # Телефони
     if record.phones:
@@ -189,7 +189,7 @@ def handle_change(args: List[str], book: AddressBook) -> str:
         elif action == "a":
             new_note = input("Enter new note: ").strip()
             if new_note:
-                record.notes.append(new_note)
+                record.add_note(new_note)
         elif action == "r":
             if not record.notes:
                 print("No notes to remove.")
@@ -218,7 +218,7 @@ def handle_change(args: List[str], book: AddressBook) -> str:
         elif action == "a":
             new_tag = input("Enter new tag: ").strip()
             if new_tag:
-                record.tags.append(new_tag)
+                record.add_tag(new_tag)
         elif action == "r":
             if not record.tags:
                 print("No tags to remove.")
@@ -235,7 +235,7 @@ def handle_change(args: List[str], book: AddressBook) -> str:
     return "Contact updated successfully."
 
 
-def _search_close(book: AddressBook, name: str):
+def _search_close(book: AddressBook, name: str) -> List[Record]:
     import difflib
     all_records = book.get_all()
     all_names = [rec.name.value for rec in all_records]
@@ -243,7 +243,7 @@ def _search_close(book: AddressBook, name: str):
     return [rec for rec in all_records if rec.name.value in close_names]
 
 
-def _find_case_insensitive(book: AddressBook, name: str):
+def _find_case_insensitive(book: AddressBook, name: str) -> Record | None:
     all_records = book.get_all()
     lowered = name.lower()
     for rec in all_records:

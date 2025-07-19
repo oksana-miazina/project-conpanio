@@ -1,7 +1,8 @@
 import difflib
-from book.AddressBook import AddressBook
+from typing import List
+from book import AddressBook, Record
 
-def handle_find(args:list[str], book: AddressBook) -> str:
+def handle_find(args: List[str], book: AddressBook) -> str:
     if len(args) < 1:
         return "Error: Please provide a name to search for.Like this:=> 'find Jon'"
     
@@ -9,7 +10,7 @@ def handle_find(args:list[str], book: AddressBook) -> str:
     exact_match = book.find(input_name)
 
     if exact_match:
-        return format_record(exact_match)
+        return str(exact_match)
     
     all_names = [rec.name.value for rec in book.get_all()]
     close_matches = difflib.get_close_matches(input_name, all_names, n=5, cutoff = 0.6 )
@@ -26,7 +27,7 @@ def handle_find(args:list[str], book: AddressBook) -> str:
             if choice.isdigit() and 1 <= int(choice) <= len(close_matches):
                 selected_name = close_matches[int(choice) - 1]
                 record = book.find(selected_name)
-                return format_record(record)
+                return str(record)
             print("Invalid input. Please enter a valid number or 'exit'.")
     else:
         # Додатковий гнучкий пошук за префіксом
@@ -45,21 +46,5 @@ def handle_find(args:list[str], book: AddressBook) -> str:
                 return "Search cancelled."
             if choice.isdigit() and 1 <= int(choice) <= len(prefix_matches):
                 selected_record = prefix_matches[int(choice) - 1]
-                return format_record(selected_record)
+                return str(selected_record)
             print("Invalid input. Please enter a valid number or 'exit'.")
-
-def format_record(record):
-    last_name = record.last_name[0].value if record.last_name else ""
-    phones = ", ".join(p.value for p in record.phones) if record.phones else ""
-    emails = ", ".join(e.value for e in record.emails) if record.emails else ""
-    birthday = record.birthday.value if record.birthday else ""
-    notes = ", ".join(n.value for n in record.notes) if record.notes else ""
-    tags = ", ".join(t.value for t in record.tags) if record.tags else ""
-    return (
-        f"Name: {record.name.value} {last_name}\n"
-        f"Phones: {phones}\n"
-        f"Emails: {emails}\n"
-        f"Birthday: {birthday}\n"
-        f"Notes: {notes}\n"
-        f"Tags: {tags}"
-    )

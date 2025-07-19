@@ -1,9 +1,7 @@
 from typing import List
 
-from book.AddressBook import AddressBook
-from book.Record import Record
-from book.Fields import Name, Phone
-from handlers.yes_no_promt_file import yes_no_prompt
+from book import AddressBook, Name, Phone, Record
+from .yes_no_prompt import yes_no_prompt
 
 def handle_add(args: List[str], book: AddressBook) -> str:
     if len(args) < 2:
@@ -45,7 +43,7 @@ def handle_add(args: List[str], book: AddressBook) -> str:
     if yes_no_prompt("Do you want to add last name? (y/n): "):
         last_name_str = input("Enter last name: ").strip()
         try:
-            record.add_LastName(last_name_str)
+            record.add_last_name(last_name_str)
         except Exception as e:
             return f"Error with last name: {e}"
 

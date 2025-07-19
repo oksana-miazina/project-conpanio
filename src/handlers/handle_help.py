@@ -1,8 +1,8 @@
-from book.AddressBook import AddressBook
 from typing import List
+from book import AddressBook
+from ui import print_menu
 
-def handle_help(args, book):
+def handle_help(args: List[str], book: AddressBook) -> str:
     # просто виклик функції допомоги, яка виводить меню 
-    from nav import __print_menu
-    __print_menu()
+    print_menu()
     return ""  # потрібно перевірити як працює

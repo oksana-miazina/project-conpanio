@@ -1,5 +1,5 @@
 from datetime import datetime
-from book.AddressBook import AddressBook
+from book import AddressBook
 from typing import List
 
 def handle_birthdays(args: List[str], book: AddressBook, days: int = 7) -> str:
@@ -23,4 +23,3 @@ def handle_birthdays(args: List[str], book: AddressBook, days: int = 7) -> str:
         return f"No birthdays in the next {days} days."
 
     return "Upcoming birthdays:\n" + "\n".join(upcoming_birthdays)
-

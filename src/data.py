@@ -1,17 +1,16 @@
 import os
 import pickle
-
-from book.AddressBook import AddressBook
+from book import AddressBook
 
 DATA_DIR = ".user_data"
 DATA_FILE = os.path.join(DATA_DIR, "addressbook.pkl")
 
-def save_data(book, filename=DATA_FILE):
+def save_data(book: AddressBook, filename: str = DATA_FILE) -> None:
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, "wb") as f:
         pickle.dump(book, f)
 
-def load_data(filename=DATA_FILE):
+def load_data(filename: str = DATA_FILE) -> AddressBook:
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     try:
         with open(filename, "rb") as f:
