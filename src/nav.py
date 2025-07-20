@@ -22,7 +22,7 @@ def start_nav(book: AddressBook) -> None:
         user_input = prompt_user("Enter a command: ").strip()
         if not user_input:
             continue
-
+        
         command, args = __parse_input(user_input)
         handler = COMMAND_HANDLERS.get(command)
        
@@ -37,6 +37,5 @@ def start_nav(book: AddressBook) -> None:
             if close_matches:
                 print_error(f"Invalid command. Did you mean: {', '.join(close_matches)}?")
             else:
-                print_error("Invalid command.")
-        
+                print_error("Invalid command.")   
         print() # Add a blank line for spacing before the next prompt
