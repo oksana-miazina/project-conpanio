@@ -1,6 +1,6 @@
 from datetime import datetime
 import re
-from typing import Any
+from typing import Any, List
 
 class Field:
     def __init__(self, value: Any):
@@ -29,13 +29,14 @@ class Phone(Field):
         super().__init__(value)  
         
 class Email(Field):
+    # A more robust and common regex for email validation.
     EMAIL_REGEX = re.compile(
-        r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     )
     
     def __init__(self, value: str):
         if not self.EMAIL_REGEX.match(value):
-            raise ValueError("Invalid email format. enter like this:'user@example.com'")
+            raise ValueError("Invalid email format. Example: user@example.com")
         super().__init__(value)
         
 class Birthday(Field):
@@ -46,10 +47,24 @@ class Birthday(Field):
             raise ValueError("Birthday must be in DD.MM.YYYY format")
         super().__init__(value)
 
-class Note(Field):
-    def __init__(self, value: str):
-        super().__init__(value)
-
 class Tag(Field):
     def __init__(self, value: str):
         super().__init__(value)
+
+class Note(Field):
+    """A class to represent a note, which contains text and a list of tags."""
+    def __init__(self, text: str):
+        if not text:
+            raise ValueError("Note text cannot be empty.")
+        super().__init__(text)
+        self.tags: List[Tag] = []
+
+    def add_tag(self, tag_text: str):
+        if not any(t.value.lower() == tag_text.lower() for t in self.tags):
+            self.tags.append(Tag(tag_text))
+
+    def __str__(self) -> str:
+        if not self.tags:
+            return self.value
+        tag_str = ", ".join(t.value for t in self.tags)
+        return f"{self.value} [Tags: {tag_str}]"

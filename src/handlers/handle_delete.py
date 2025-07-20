@@ -1,45 +1,23 @@
-import difflib
 from book import AddressBook
 from .yes_no_prompt import yes_no_prompt
+from .contact_finder import find_contact_interactive
+from ui import print_error, print_line, print_title
 
-def handle_delete(args: list[str], book: AddressBook) -> str:
+def handle_delete(args: list[str], book: AddressBook) -> None:
     if len(args) < 1:
-        return "Error: Please provide a name to delete. Example: delete John"
+        print_error("Error: Please provide a name to delete. Example: delete John")
+        return
 
-    input_name = args[0].capitalize()
-    record = book.find(input_name)
+    name_query = args[0]
+    record_to_delete = find_contact_interactive(book, name_query)
 
-    if record:
-        print("Found contact:")
-        print(record)
+    if record_to_delete:
+        print_title("\nThis contact will be deleted:")
+        print(record_to_delete)
         if yes_no_prompt("Are you sure you want to delete this contact? (y/n): "):
-            book.delete(input_name)
-            return f"Contact '{input_name}' deleted successfully."
+            book.delete_record(record_to_delete)
+            print_line(f"Contact '{record_to_delete.name.value}' deleted successfully.")
         else:
-            return "Delete cancelled."
-
-    all_names = [rec.name.value for rec in book.get_all()]
-    close_matches = difflib.get_close_matches(input_name, all_names, n=5, cutoff=0.6)
-
-    if close_matches:
-        print(f"No exact match for '{input_name}'. Did you mean:")
-        for idx, name in enumerate(close_matches, 1):
-            print(f"{idx}. {name}")
-
-        while True:
-            choice = input("Enter the number of the correct name to delete (or 'exit' to cancel): ").strip()
-            if choice.lower() == 'exit':
-                return "Delete cancelled."
-            if choice.isdigit() and 1 <= int(choice) <= len(close_matches):
-                selected_name = close_matches[int(choice) - 1]
-                record = book.find(selected_name)
-                print("Selected contact:")
-                print(record)
-                if yes_no_prompt("Are you sure you want to delete this contact? (y/n): "):
-                    book.delete(selected_name)
-                    return f"Contact '{selected_name}' deleted successfully."
-                else:
-                    return "Delete cancelled."
-            print("Invalid input. Please enter a valid number or 'exit'.")
-
-    return f"Contact '{input_name}' not found."
+            print_error("Delete cancelled.")
+    else:
+        print_error("Operation cancelled.")

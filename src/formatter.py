@@ -1,6 +1,7 @@
 from typing import List
 from book import Record
 
+
 TABLE_CONFIG = {
     "name": {"display": "First Name", "width": 15},
     "last_name": {"display": "Last Name", "width": 15},
@@ -12,37 +13,56 @@ TABLE_CONFIG = {
 }
 
 def _truncate(text: str, width: int) -> str:
+    """Truncates text to a given width, adding '...' if necessary."""
     if len(text) <= width:
         return text
     return text[:width - 3] + "..." if width > 3 else text[:width]
 
 def _format_record_to_rows(record: Record) -> list[str]:
-    name_col = [_truncate(record.name.value, TABLE_CONFIG["name"]["width"])]
-    last_name_col = [_truncate(record.last_name.value if record.last_name else "", TABLE_CONFIG["last_name"]["width"])]
-    phones_col = [_truncate(p.value, TABLE_CONFIG["phones"]["width"]) for p in record.phones] or [""]
-    emails_col = [_truncate(e.value, TABLE_CONFIG["emails"]["width"]) for e in record.emails] or [""]
-    birthday_col = [_truncate(record.birthday.value if record.birthday else "", TABLE_CONFIG["birthday"]["width"])]
-    notes_col = [_truncate(n.value, TABLE_CONFIG["notes"]["width"]) for n in record.notes] or [""]
-    tags_col = [_truncate(t.value, TABLE_CONFIG["tags"]["width"]) for t in record.tags] or [""]
+    """
+    Форматує один запис у вигляд списку рядків для таблиці.
+    Код написаний просто, щоб його було легко зрозуміти.
+    """
+    # 1. Готуємо дані для кожної колонки як списки рядків
+    name_lines = [record.name.value]
+    last_name_lines = [record.last_name.value if record.last_name else ""]
+    phone_lines = [p.value for p in record.phones]
+    email_lines = [e.value for e in record.emails]
+    birthday_lines = [record.birthday.value if record.birthday else ""]
+    note_lines = [n.value for n in record.notes]
+    tag_lines = [", ".join(t.value for t in n.tags) for n in record.notes]
 
-    columns = [name_col, last_name_col, phones_col, emails_col, birthday_col, notes_col, tags_col]
-    num_rows = max(len(col) for col in columns)
+    # 2. Визначаємо, скільки рядків займе цей запис
+    all_field_lines = [
+        name_lines, last_name_lines, phone_lines, email_lines, birthday_lines, note_lines, tag_lines
+    ]
+    num_rows = max(len(field) for field in all_field_lines) if all_field_lines else 1
 
-    for col in columns:
-        col.extend([""] * (num_rows - len(col)))
-
+    # 3. Створюємо кожен рядок для таблиці
     output_rows = []
     for i in range(num_rows):
-        row_data = [col[i] for col in columns]
-        output_rows.append(
-            f"{row_data[0]:<{TABLE_CONFIG['name']['width']}} "
-            f"{row_data[1]:<{TABLE_CONFIG['last_name']['width']}} "
-            f"{row_data[2]:<{TABLE_CONFIG['phones']['width']}} "
-            f"{row_data[3]:<{TABLE_CONFIG['emails']['width']}} "
-            f"{row_data[4]:<{TABLE_CONFIG['birthday']['width']}} "
-            f"{row_data[5]:<{TABLE_CONFIG['notes']['width']}} "
-            f"{row_data[6]:<{TABLE_CONFIG['tags']['width']}}"
-        )
+        # Для полів з одним значенням (ім'я, прізвище, д.н.) беремо дані тільки для першого рядка
+        name = name_lines[0] if i == 0 else ""
+        last_name = last_name_lines[0] if i == 0 else ""
+        birthday = birthday_lines[0] if i == 0 else ""
+
+        # Для полів-списків (телефони, email) беремо i-й елемент
+        phone = phone_lines[i] if i < len(phone_lines) else ""
+        email = email_lines[i] if i < len(email_lines) else ""
+        note = note_lines[i] if i < len(note_lines) else ""
+        tag = tag_lines[i] if i < len(tag_lines) else ""
+
+        # 4. Форматуємо рядок, обрізаючи текст, якщо він задовгий
+        row_parts = [
+            f"{_truncate(name, TABLE_CONFIG['name']['width']):<{TABLE_CONFIG['name']['width']}}",
+            f"{_truncate(last_name, TABLE_CONFIG['last_name']['width']):<{TABLE_CONFIG['last_name']['width']}}",
+            f"{_truncate(phone, TABLE_CONFIG['phones']['width']):<{TABLE_CONFIG['phones']['width']}}",
+            f"{_truncate(email, TABLE_CONFIG['emails']['width']):<{TABLE_CONFIG['emails']['width']}}",
+            f"{_truncate(birthday, TABLE_CONFIG['birthday']['width']):<{TABLE_CONFIG['birthday']['width']}}",
+            f"{_truncate(note, TABLE_CONFIG['notes']['width']):<{TABLE_CONFIG['notes']['width']}}",
+            f"{_truncate(tag, TABLE_CONFIG['tags']['width']):<{TABLE_CONFIG['tags']['width']}}",
+        ]
+        output_rows.append(" ".join(row_parts))
     return output_rows
 
 def format_records_as_table(records: List[Record]) -> str:
