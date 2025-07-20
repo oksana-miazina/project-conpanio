@@ -11,6 +11,7 @@ from .handle_edit_note import handle_edit_note
 from .handle_add_note import handle_add_note
 from .handle_hello import handle_hello
 from .handle_help import handle_help
+from .handle_find_phonenumber import handle_find_phonenumber
 
 COMMAND_HANDLERS = {
     "hello": handle_hello,
@@ -26,6 +27,7 @@ COMMAND_HANDLERS = {
     "find-tag": handle_find_tag,
     "tags": handle_tags,
     "help": handle_help,
+    "find-phonenumber": handle_find_phonenumber,
 }
 
 __all__ = [

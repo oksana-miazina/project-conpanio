@@ -36,6 +36,7 @@ def print_menu() -> None:
     print_line("  change <name>         - Interactively edit a contact.")
     print_line("  delete <name>         - Delete a contact.")
     print_line("  find <name>           - Find a contact by name.")
+    print_line("  find-phonenumber <number> - Search for contacts by phone number.")
 
     color_print("\n--- Note & Tag Management ---", COLOR_DESCRIPTION)
     print_line("  add-note <name> <text>- Add a note to a contact.")
