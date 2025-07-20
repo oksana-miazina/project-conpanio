@@ -2,7 +2,9 @@ from datetime import datetime
 from book import AddressBook
 from typing import List
 
-def handle_birthdays(args: List[str], book: AddressBook, days: int = 7) -> str:
+from ui import print_title, print_line
+
+def handle_birthdays(args: List[str], book: AddressBook, days: int = 7) -> None:
     today = datetime.today().date()
     upcoming_birthdays = []
 
@@ -20,6 +22,9 @@ def handle_birthdays(args: List[str], book: AddressBook, days: int = 7) -> str:
                 continue  # пропускаємо якщо дата некоректна
 
     if not upcoming_birthdays:
-        return f"No birthdays in the next {days} days."
+        print_line(f"No birthdays in the next {days} days.")
+        return
 
-    return "Upcoming birthdays:\n" + "\n".join(upcoming_birthdays)
+    print_title("Upcoming birthdays:")
+    for birthday_info in upcoming_birthdays:
+        print_line(f"  {birthday_info}")

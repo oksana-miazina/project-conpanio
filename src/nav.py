@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 from handlers import COMMAND_HANDLERS
 from book import AddressBook
-from ui import print_error, print_menu, print_title
+from ui import print_error, print_menu, print_title, prompt_user
 
 def __parse_input(user_input: str) -> Tuple[str, List[str]]:
     cmd, *args = user_input.strip().split()
@@ -19,7 +19,7 @@ def start_nav(book: AddressBook) -> None:
     commands_list = list(COMMAND_HANDLERS.keys()) + ["exit", "close"]
 
     while True:
-        user_input = input("Enter a command: ").strip()
+        user_input = prompt_user("Enter a command: ").strip()
         if not user_input:
             continue
 
@@ -27,7 +27,7 @@ def start_nav(book: AddressBook) -> None:
         handler = COMMAND_HANDLERS.get(command)
        
         if handler:
-            print(handler(args, book))
+            handler(args, book)
         elif command in ("exit", "close"):
             print_title("Good bye!")
             raise ExitException    
@@ -38,3 +38,5 @@ def start_nav(book: AddressBook) -> None:
                 print_error(f"Invalid command. Did you mean: {', '.join(close_matches)}?")
             else:
                 print_error("Invalid command.")
+        
+        print() # Add a blank line for spacing before the next prompt

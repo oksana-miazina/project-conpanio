@@ -10,8 +10,7 @@ class Record:
         self.phones = []
         self.emails = []
         self.birthday = None
-        self.notes = []
-        self.tags = []
+        self.notes: List[Note] = []
 
     def add_last_name(self, last_name: str) -> None:
         self.last_name = LastName(last_name)
@@ -28,11 +27,10 @@ class Record:
     def add_birthday(self, birthday: str) -> None:
         self.birthday = Birthday(birthday)
         
-    def add_note(self, note: str) -> None:
-        self.notes.append(Note(note))
-
-    def add_tag(self, tag: str) -> None:
-        self.tags.append(Tag(tag))
+    def add_note(self, note_text: str) -> Note:
+        note = Note(note_text)
+        self.notes.append(note)
+        return note
 
     @staticmethod
     def _format_list(items: list, default: str = "N/A") -> str:
@@ -45,14 +43,12 @@ class Record:
         phones_str = self._format_list(self.phones)
         emails_str = self._format_list(self.emails)
         birthday_str = str(self.birthday) if self.birthday else "N/A"
-        notes_str = self._format_list(self.notes)
-        tags_str = self._format_list(self.tags)
+        notes_str = self._format_list(self.notes) # This will now use Note.__str__
 
         return (
             f"Name: {self.name.value} {last_name_str}\n"
             f"  Phones: {phones_str}\n"
             f"  Emails: {emails_str}\n"
             f"  Birthday: {birthday_str}\n"
-            f"  Notes: {notes_str}\n"
-            f"  Tags: {tags_str}"
+            f"  Notes: {notes_str}"
         )

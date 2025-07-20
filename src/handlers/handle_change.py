@@ -1,251 +1,176 @@
 from typing import List
-from book import AddressBook, Record
+from book import AddressBook, Record, Name
+from .contact_finder import find_contact_interactive
+from ui import print_error, print_line, print_title, prompt_user
 
-def handle_change(args: List[str], book: AddressBook) -> str:
+def handle_change(args: List[str], book: AddressBook) -> None:
     if not args:
-        return "Error: Please provide a name to change. Usage: change <name>"
+        print_error("Error: Please provide a name to change. Usage: change <name>")
+        return
 
-    input_name = args[0].lower()
-    all_records = book.get_all()
+    record = find_contact_interactive(book, args[0])
+    if not record:
+        print_error("Change cancelled.")
+        return
 
-    # Знаходимо всі записи, імена яких починаються з input_name (регістронечутливо)
-    matching_records = [rec for rec in all_records if rec.name.value.lower().startswith(input_name)]
-
-    if len(matching_records) == 1:
-        record = matching_records[0]
-    elif len(matching_records) == 0:
-        while True:
-            print(f"No contacts found matching '{args[0]}'. Try again or type 'exit' to cancel.")
-            choice = input("Enter name or 'exit': ").strip()
-            if choice.lower() == 'exit':
-                return "Change cancelled."
-
-            close_results = _search_close(book, choice)
-            if len(close_results) == 1:
-                record = close_results[0]
-                break
-            elif len(close_results) > 1:
-                print("Did you mean:")
-                for i, rec in enumerate(close_results, 1):
-                    print(f"{i}. {rec.name.value}")
-                while True:
-                    sel = input("Enter number of correct name or 'exit': ").strip()
-                    if sel.lower() == 'exit':
-                        return "Change cancelled."
-                    if sel.isdigit() and 1 <= int(sel) <= len(close_results):
-                        record = close_results[int(sel) - 1]
-                        break
-                    print("Invalid input. Try again.")
-                break
-            else:
-                print("No contacts found. Try again or type 'exit'.")
-    else:
-        print("Multiple contacts found:")
-        for i, rec in enumerate(matching_records, 1):
-            print(f"{i}. {rec.name.value}")
-        while True:
-            sel = input("Enter number of correct name or 'exit': ").strip()
-            if sel.lower() == 'exit':
-                return "Change cancelled."
-            if sel.isdigit() and 1 <= int(sel) <= len(matching_records):
-                record = matching_records[int(sel) - 1]
-                break
-            print("Invalid input. Try again.")
-
-    print("Found this contact:")
+    print_title("Found this contact:")
     print(record)
-    change_confirm = input("Do you want to change this contact? (y/n): ").strip().lower()
+    change_confirm = prompt_user("Do you want to change this contact? (y/n): ").strip().lower()
     if change_confirm not in ('y', 'yes'):
-        return "Change cancelled. Returning to main menu."
-
-    print("Leave empty to keep current value, enter a single space to clear the value.")
+        print_error("Change cancelled.")
+        return
 
     # Редагування полів:    
     # Ім'я (Критична секція: оновлення ключа в словнику)
-    new_name = input(f"Name [{record.name.value}]: ").strip()
-    if new_name and new_name.capitalize() != record.name.value:
+    while True:
+        new_name = prompt_user(f"Name [{record.name.value}] (leave empty to keep current): ").strip()
+        if not new_name or new_name.capitalize() == record.name.value:
+            break
         try:
-            book.rename_contact(record, new_name)
+            record.name = Name(new_name)
+            print_line("Name updated.")
+            break
         except ValueError as e:
-            print(f"Error: {e}. Name was not changed.")
+            print_error(f"Error: {e}. Please try again.")
 
     # Прізвище
-    current_last_name = record.last_name.value if record.last_name else ""
-    new_last_name = input(f"Last Name [{current_last_name}]: ").strip()
-    if new_last_name == " ":
-        record.remove_last_name()
-    elif new_last_name:
+    while True:
+        current_last_name = record.last_name.value if record.last_name else ""
+        new_last_name = prompt_user(f"Last Name [{current_last_name}] (space to clear, empty to keep): ").strip()
+        if not new_last_name:
+            break
         try:
-            record.add_last_name(new_last_name)
+            if new_last_name == " ":
+                record.remove_last_name()
+            else:
+                record.add_last_name(new_last_name)
+            print_line("Last name updated.")
+            break
         except ValueError as e:
-            print(f"Error: {e}")
+            print_error(f"Error: {e}. Please try again.")
 
     # Телефони
     if record.phones:
-        print("Current phones:")
+        print_title("\nCurrent phones:")
         for i, p in enumerate(record.phones, 1):
-            print(f"{i}. {p.value}")
+            print_line(f"  {i}. {p.value}")
     else:
-        print("No phones.")
+        print_line("\nNo phones.")
 
     while True:
-        action = input("Do you want to (a)dd, (r)emove, or (c)hange phones? (enter to skip): ").strip().lower()
-        if action == "":
+        action = prompt_user("Phones: (a)dd, (r)emove, (c)hange, or (s)kip? ").strip().lower()
+        if action == "s":
             break
         elif action == "a":
-            new_phone = input("Enter new phone: ").strip()
-            if new_phone:
-                record.add_phone(new_phone)
+            while True:
+                new_phone = prompt_user("Enter new phone (or leave empty to cancel): ").strip()
+                if not new_phone:
+                    break
+                try:
+                    record.add_phone(new_phone)
+                    print_line("Phone added.")
+                    break
+                except ValueError as e:
+                    print_error(f"Error: {e}. Please try again.")
         elif action == "r":
             if not record.phones:
-                print("No phones to remove.")
+                print_line("No phones to remove.")
                 continue
-            rem_index = input("Enter phone number to remove (index): ").strip()
+            rem_index = prompt_user("Enter phone number to remove (index): ").strip()
             if rem_index.isdigit() and 1 <= int(rem_index) <= len(record.phones):
                 record.phones.pop(int(rem_index) - 1)
-                print("Phone removed.")
+                print_line("Phone removed.")
             else:
-                print("Invalid index.")
+                print_error("Invalid index.")
         elif action == "c":
             if not record.phones:
-                print("No phones to change.")
+                print_line("No phones to change.")
                 continue
-            ch_index = input("Enter phone number to change (index): ").strip()
+            ch_index = prompt_user("Enter phone number to change (index): ").strip()
             if ch_index.isdigit() and 1 <= int(ch_index) <= len(record.phones):
-                new_phone = input("Enter new phone value: ").strip()
-                if new_phone:
-                    record.phones[int(ch_index) - 1].value = new_phone
-                    print("Phone updated.")
-            else:
-                print("Invalid index.")
+                while True:
+                    new_phone = prompt_user("Enter new phone value (or leave empty to cancel): ").strip()
+                    if not new_phone:
+                        break
+                    try:
+                        # Validate before assigning
+                        Phone(new_phone)
+                        record.phones[int(ch_index) - 1].value = new_phone
+                        print_line("Phone updated.")
+                        break
+                    except ValueError as e:
+                        print_error(f"Error: {e}")
         else:
-            print("Invalid action.")
+            print_error("Invalid action.")
 
     # Емейли (аналогічно)
     if record.emails:
-        print("Current emails:")
+        print_title("\nCurrent emails:")
         for i, e in enumerate(record.emails, 1):
-            print(f"{i}. {e.value}")
+            print_line(f"  {i}. {e.value}")
     else:
-        print("No emails.")
+        print_line("\nNo emails.")
 
     while True:
-        action = input("Do you want to (a)dd, (r)emove, or (c)hange emails? (enter to skip): ").strip().lower()
-        if action == "":
+        action = prompt_user("Emails: (a)dd, (r)emove, (c)hange, or (s)kip? ").strip().lower()
+        if action == "s":
             break
         elif action == "a":
-            new_email = input("Enter new email: ").strip()
-            if new_email:
-                record.add_email(new_email)
+            while True:
+                new_email = prompt_user("Enter new email (or leave empty to cancel): ").strip()
+                if not new_email:
+                    break
+                try:
+                    record.add_email(new_email)
+                    print_line("Email added.")
+                    break
+                except ValueError as e:
+                    print_error(f"Error: {e}. Please try again.")
         elif action == "r":
             if not record.emails:
-                print("No emails to remove.")
+                print_line("No emails to remove.")
                 continue
-            rem_index = input("Enter email number to remove (index): ").strip()
+            rem_index = prompt_user("Enter email number to remove (index): ").strip()
             if rem_index.isdigit() and 1 <= int(rem_index) <= len(record.emails):
                 record.emails.pop(int(rem_index) - 1)
-                print("Email removed.")
+                print_line("Email removed.")
             else:
-                print("Invalid index.")
+                print_error("Invalid index.")
         elif action == "c":
             if not record.emails:
-                print("No emails to change.")
+                print_line("No emails to change.")
                 continue
-            ch_index = input("Enter email number to change (index): ").strip()
+            ch_index = prompt_user("Enter email number to change (index): ").strip()
             if ch_index.isdigit() and 1 <= int(ch_index) <= len(record.emails):
-                new_email = input("Enter new email value: ").strip()
-                if new_email:
-                    record.emails[int(ch_index) - 1].value = new_email
-                    print("Email updated.")
-            else:
-                print("Invalid index.")
+                while True:
+                    new_email = prompt_user("Enter new email value (or leave empty to cancel): ").strip()
+                    if not new_email:
+                        break
+                    try:
+                        # Validate before assigning
+                        Email(new_email)
+                        record.emails[int(ch_index) - 1].value = new_email
+                        print_line("Email updated.")
+                        break
+                    except ValueError as e:
+                        print_error(f"Error: {e}")
         else:
-            print("Invalid action.")
+            print_error("Invalid action.")
 
     # День народження
-    current_bday = record.birthday.value if record.birthday else ""
-    new_bday = input(f"Birthday [{current_bday}] (DD.MM.YYYY): ").strip()
-    if new_bday == " ":
-        record.birthday = None
-    elif new_bday:
+    while True:
+        current_bday = record.birthday.value if record.birthday else ""
+        new_bday = prompt_user(f"Birthday [{current_bday}] (DD.MM.YYYY, space to clear, empty to keep): ").strip()
+        if not new_bday:
+            break
         try:
-            record.add_birthday(new_bday)
-        except Exception as e:
-            print(f"Invalid birthday format: {e}")
-
-    # Нотатки
-    if record.notes:
-        print("Current notes:")
-        for i, n in enumerate(record.notes, 1):
-            print(f"{i}. {n.value}")
-    else:
-        print("No notes.")
-
-    while True:
-        action = input("Do you want to (a)dd, (r)emove notes? (enter to skip): ").strip().lower()
-        if action == "":
-            break
-        elif action == "a":
-            new_note = input("Enter new note: ").strip()
-            if new_note:
-                record.add_note(new_note)
-        elif action == "r":
-            if not record.notes:
-                print("No notes to remove.")
-                continue
-            rem_index = input("Enter note number to remove (index): ").strip()
-            if rem_index.isdigit() and 1 <= int(rem_index) <= len(record.notes):
-                record.notes.pop(int(rem_index) - 1)
-                print("Note removed.")
+            if new_bday == " ":
+                record.birthday = None
             else:
-                print("Invalid index.")
-        else:
-            print("Invalid action.")
-
-    # Теги
-    if record.tags:
-        print("Current tags:")
-        for i, t in enumerate(record.tags, 1):
-            print(f"{i}. {t.value}")
-    else:
-        print("No tags.")
-
-    while True:
-        action = input("Do you want to (a)dd, (r)emove tags? (enter to skip): ").strip().lower()
-        if action == "":
+                record.add_birthday(new_bday)
+            print_line("Birthday updated.")
             break
-        elif action == "a":
-            new_tag = input("Enter new tag: ").strip()
-            if new_tag:
-                record.add_tag(new_tag)
-        elif action == "r":
-            if not record.tags:
-                print("No tags to remove.")
-                continue
-            rem_index = input("Enter tag number to remove (index): ").strip()
-            if rem_index.isdigit() and 1 <= int(rem_index) <= len(record.tags):
-                record.tags.pop(int(rem_index) - 1)
-                print("Tag removed.")
-            else:
-                print("Invalid index.")
-        else:
-            print("Invalid action.")
+        except ValueError as e:
+            print_error(f"Invalid birthday format: {e}. Please try again.")
 
-    return "Contact updated successfully."
-
-
-def _search_close(book: AddressBook, name: str) -> List[Record]:
-    import difflib
-    all_records = book.get_all()
-    all_names = [rec.name.value for rec in all_records]
-    close_names = difflib.get_close_matches(name.capitalize(), all_names, n=5, cutoff=0.6)
-    return [rec for rec in all_records if rec.name.value in close_names]
-
-
-def _find_case_insensitive(book: AddressBook, name: str) -> Record | None:
-    all_records = book.get_all()
-    lowered = name.lower()
-    for rec in all_records:
-        if rec.name.value.lower() == lowered:
-            return rec
-    return None
+    print_line("Contact updated successfully.")
