@@ -1,5 +1,5 @@
 from typing import List
-from book import AddressBook, Record, Name
+from book import AddressBook, Name
 from .contact_finder import find_contact_interactive
 from ui import print_error, print_line, print_title, prompt_user
 

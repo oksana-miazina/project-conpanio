@@ -2,7 +2,7 @@ from typing import List
 
 from book import AddressBook, Name, Phone, Record
 from .yes_no_prompt import yes_no_prompt
-from ui import print_error, print_line, prompt_user, print_title
+from ui import print_error, prompt_user, print_title
 
 def handle_add(args: List[str], book: AddressBook) -> None:
     if len(args) < 2:

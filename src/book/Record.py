@@ -1,6 +1,4 @@
-from datetime import datetime
-from typing import List, Optional
-from .Fields import Name, LastName, Phone, Email, Birthday, Note, Tag
+from .Fields import Name, LastName, Phone, Email, Birthday, Note
 
 class Record:
     
@@ -10,7 +8,7 @@ class Record:
         self.phones = []
         self.emails = []
         self.birthday = None
-        self.notes: List[Note] = []
+        self.notes = []
 
     def add_last_name(self, last_name: str) -> None:
         self.last_name = LastName(last_name)
@@ -43,7 +41,7 @@ class Record:
         phones_str = self._format_list(self.phones)
         emails_str = self._format_list(self.emails)
         birthday_str = str(self.birthday) if self.birthday else "N/A"
-        notes_str = self._format_list(self.notes) # This will now use Note.__str__
+        notes_str = self._format_list(self.notes)
 
         return (
             f"Name: {self.name.value} {last_name_str}\n"

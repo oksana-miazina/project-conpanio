@@ -1,9 +1,9 @@
-from typing import List, Set, Tuple
-from book import AddressBook, Record
+from typing import List
+from book import AddressBook
 from ui import print_error, print_line, print_title, prompt_user
 
 def handle_tags(args: List[str], book: AddressBook) -> None:
-    all_tags: Set[str] = set()
+    all_tags = set()
     for record in book.get_all():
         for note in record.notes:
             for tag in note.tags:
@@ -31,7 +31,7 @@ def handle_tags(args: List[str], book: AddressBook) -> None:
         else:
             print_error("Invalid input. Please try again.")
 
-    results: List[Tuple[Record, List[str]]] = []
+    results = []
     for record in book.get_all():
         matching_notes = []
         for note in record.notes:
@@ -47,7 +47,7 @@ def handle_tags(args: List[str], book: AddressBook) -> None:
         if record.last_name:
             full_name += f" {record.last_name.value}"
             
-        print("") # for newline
+        print("")
         print_line(f"Contact: {full_name}")
         for note_text in notes:
             print(f"  - {note_text}")

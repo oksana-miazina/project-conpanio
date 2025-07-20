@@ -4,10 +4,6 @@ from book import AddressBook, Record
 from ui import print_line, print_title, print_error, prompt_user
 
 def find_contact_interactive(book: AddressBook, name_query: str) -> Optional[Record]:
-    """
-    Interactively finds a contact. Handles cases where multiple contacts
-    have the same name, and suggests close matches for typos.
-    """
     # 1. Try for exact matches
     exact_matches = book.find_by_name(name_query)
 
@@ -44,6 +40,5 @@ def find_contact_interactive(book: AddressBook, name_query: str) -> Optional[Rec
         if sel.lower() == 'exit':
             return None
         if sel.isdigit() and 1 <= int(sel) <= len(close_matches):
-            # Search again with the corrected name, which might again yield multiple results
             return find_contact_interactive(book, close_matches[int(sel) - 1])
         print_error("Invalid input. Try again.")
