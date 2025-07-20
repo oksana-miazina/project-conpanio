@@ -32,7 +32,6 @@ def find_contact_interactive(book: AddressBook, name_query: str) -> Optional[Rec
             info_str = ", ".join(parts)
             print_line(f"  {i}. {info_str}")
 
-        # Запит вибору
         while True:
             sel = prompt_user("Enter the number of the correct contact or 'exit' to cancel: ").strip()
             if sel.lower() == 'exit':

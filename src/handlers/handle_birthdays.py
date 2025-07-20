@@ -19,7 +19,7 @@ def handle_birthdays(args: List[str], book: AddressBook, days: int = 7) -> None:
                 if 0 <= delta_days <= days:
                     upcoming_birthdays.append(f"{record.name.value} — {bday.strftime('%Y-%m-%d')}")
             except Exception:
-                continue  # пропускаємо якщо дата некоректна
+                continue 
 
     if not upcoming_birthdays:
         print_line(f"No birthdays in the next {days} days.")
