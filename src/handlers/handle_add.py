@@ -6,7 +6,7 @@ from ui import print_error, prompt_user, print_title
 
 def handle_add(args: List[str], book: AddressBook) -> None:
     if len(args) < 2:
-        print_error("Error: Please provide a name and a phone number, like this ==> John 0123456789")
+        print_error("Error: Please provide a name and a phone number, like this ==> add John 0123456789")
         return
 
     name_str = args[0]
