@@ -1,5 +1,5 @@
-from typing import List, Tuple
-from book import AddressBook, Record
+from typing import List
+from book import AddressBook
 from ui import print_title, print_line, print_error
 
 def handle_find_notes(args: List[str], book: AddressBook) -> None:
@@ -9,7 +9,7 @@ def handle_find_notes(args: List[str], book: AddressBook) -> None:
 
     search_query = " ".join(args)
     lower_query = search_query.lower()
-    results: List[Tuple[Record, List[str]]] = []
+    results = []
 
     for record in book.get_all():
         matching_notes_for_record = []

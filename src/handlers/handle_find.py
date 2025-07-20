@@ -1,7 +1,7 @@
 from typing import List
 from book import AddressBook
 from .contact_finder import find_contact_interactive
-from ui import print_error, print_line
+from ui import print_error
 
 def handle_find(args: List[str], book: AddressBook) -> None:
     if len(args) < 1:

@@ -52,7 +52,6 @@ class Tag(Field):
         super().__init__(value)
 
 class Note(Field):
-    """A class to represent a note, which contains text and a list of tags."""
     def __init__(self, text: str):
         if not text:
             raise ValueError("Note text cannot be empty.")

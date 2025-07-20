@@ -4,7 +4,6 @@ from .contact_finder import find_contact_interactive
 from ui import print_error, print_line, print_title, prompt_user
 
 def _select_note_interactive(record: Record) -> Note | None:
-    """Interactively select a note from a record to edit."""
     if not record.notes:
         print_line(f"Contact '{record.name.value}' has no notes to edit.")
         return None
@@ -22,7 +21,6 @@ def _select_note_interactive(record: Record) -> Note | None:
         print_error("Invalid input. Try again.")
 
 def _edit_tags(note: Note):
-    """Interactive loop to add/remove tags for a note."""
     while True:
         if note.tags:
             print_title("Current tags:")
@@ -53,7 +51,6 @@ def _edit_tags(note: Note):
             print_error("Invalid action.")
 
 def handle_edit_note(args: List[str], book: AddressBook) -> None:
-    """Interactively edit a note's text or its tags."""
     if not args:
         print_error("Error: Please provide a contact name. Usage: edit-note <name>")
         return
