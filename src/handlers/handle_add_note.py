@@ -1,7 +1,7 @@
 from typing import List
 from book import AddressBook
-from .contact_finder import find_contact_interactive
-from .yes_no_prompt import yes_no_prompt
+from handlers.contact_finder import find_contact_interactive
+from handlers.yes_no_prompt import yes_no_prompt
 from ui import print_error, print_line, prompt_user
 
 def handle_add_note(args: List[str], book: AddressBook) -> None:

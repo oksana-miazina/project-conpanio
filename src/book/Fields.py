@@ -8,12 +8,14 @@ class Field:
     def __str__(self) -> str:
         return str(self.value)
 
+
 class Name(Field):
      def __init__(self, value: str):
          if not value or not value.strip():
             raise ValueError("Name cannot be empty.")
          formatted = value.strip().capitalize()
          super().__init__(formatted)
+
 
 class LastName(Field):
      def __init__(self, value: str):
@@ -22,12 +24,14 @@ class LastName(Field):
          formatted = value.strip().capitalize()
          super().__init__(formatted)
 
+
 class Phone(Field):
     def __init__(self, value: str):
         if not value.isdigit() or len(value) != 10:
             raise ValueError("Phone must be 10 digits, like this: 0123456789")
         super().__init__(value)  
-        
+
+
 class Email(Field):
     # A more robust and common regex for email validation.
     EMAIL_REGEX = re.compile(
@@ -38,7 +42,8 @@ class Email(Field):
         if not self.EMAIL_REGEX.match(value):
             raise ValueError("Invalid email format. Example: user@example.com")
         super().__init__(value)
-        
+
+
 class Birthday(Field):
     def __init__(self, value: str):
         try:
@@ -47,9 +52,11 @@ class Birthday(Field):
             raise ValueError("Birthday must be in DD.MM.YYYY format")
         super().__init__(value)
 
+
 class Tag(Field):
     def __init__(self, value: str):
         super().__init__(value)
+
 
 class Note(Field):
     def __init__(self, text: str):

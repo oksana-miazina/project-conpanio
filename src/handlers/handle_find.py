@@ -1,6 +1,6 @@
 from typing import List
 from book import AddressBook
-from .contact_finder import find_contact_interactive
+from handlers.contact_finder import find_contact_interactive
 from ui import print_error
 
 def handle_find(args: List[str], book: AddressBook) -> None:

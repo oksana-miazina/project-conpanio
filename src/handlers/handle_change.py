@@ -1,6 +1,6 @@
 from typing import List
 from book import AddressBook, Name, Phone, Email
-from .contact_finder import find_contact_interactive
+from handlers.contact_finder import find_contact_interactive
 from ui import print_error, print_line, print_title, prompt_user
 
 def handle_change(args: List[str], book: AddressBook) -> None:
@@ -20,8 +20,7 @@ def handle_change(args: List[str], book: AddressBook) -> None:
         print_error("Change cancelled.")
         return
 
-    # Редагування полів:    
-    # Ім'я (Критична секція: оновлення ключа в словнику)
+    # Ім'я
     while True:
         new_name = prompt_user(f"Name [{record.name.value}] (leave empty to keep current): ").strip()
         if not new_name or new_name.capitalize() == record.name.value:
@@ -103,7 +102,7 @@ def handle_change(args: List[str], book: AddressBook) -> None:
         else:
             print_error("Invalid action.")
 
-    # Емейли (аналогічно)
+    # Емейли
     if record.emails:
         print_title("\nCurrent emails:")
         for i, e in enumerate(record.emails, 1):

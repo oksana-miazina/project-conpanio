@@ -40,7 +40,6 @@ def find_contact_interactive(book: AddressBook, name_query: str) -> Optional[Rec
                 return exact_matches[int(sel) - 1]
             print_error("Invalid input. Try again.")
 
-    # 2. If no exact or prefix matches, try close matches (typos)
     all_names = sorted(list(set(rec.name.value for rec in book.get_all()))) 
     close_matches = difflib.get_close_matches(name_query.capitalize(), all_names, n=3, cutoff=0.6)
 
