@@ -1,6 +1,6 @@
 from typing import List
 from book import AddressBook, Record, Note
-from .contact_finder import find_contact_interactive
+from handlers.contact_finder import find_contact_interactive
 from ui import print_error, print_line, print_title, prompt_user
 
 def _select_note_interactive(record: Record) -> Note | None:
@@ -19,6 +19,7 @@ def _select_note_interactive(record: Record) -> Note | None:
         if sel.isdigit() and 1 <= int(sel) <= len(record.notes):
             return record.notes[int(sel) - 1]
         print_error("Invalid input. Try again.")
+
 
 def _edit_tags(note: Note):
     while True:
@@ -49,6 +50,7 @@ def _edit_tags(note: Note):
                 print_error("Invalid index.")
         else:
             print_error("Invalid action.")
+
 
 def handle_edit_note(args: List[str], book: AddressBook) -> None:
     if not args:

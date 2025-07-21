@@ -1,6 +1,6 @@
 from book import AddressBook
-from .yes_no_prompt import yes_no_prompt
-from .contact_finder import find_contact_interactive
+from handlers.yes_no_prompt import yes_no_prompt
+from handlers.contact_finder import find_contact_interactive
 from ui import print_error, print_line, print_title
 
 def handle_delete(args: list[str], book: AddressBook) -> None:

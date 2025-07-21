@@ -1,7 +1,7 @@
 from typing import List
 
 from book import AddressBook, Name, Phone, Record
-from .yes_no_prompt import yes_no_prompt
+from handlers.yes_no_prompt import yes_no_prompt
 from ui import print_error, prompt_user, print_title
 
 def handle_add(args: List[str], book: AddressBook) -> None:
@@ -19,7 +19,6 @@ def handle_add(args: List[str], book: AddressBook) -> None:
         print_error(f"Error: {e}")
         return
 
-    # Перевірка телефонів у всіх контактах
     for rec in book.get_all():
         rec: Record
         phone_values = [p.value for p in getattr(rec, 'phones', [])]
@@ -27,7 +26,6 @@ def handle_add(args: List[str], book: AddressBook) -> None:
             print_error(f"Phone number {phone_str} is already assigned to another contact '{rec.name.value}'.")
             return
 
-    # Якщо такого контакту немає — створюємо новий
     record = Record(name)
     try:
         record.add_phone(phone_str)
@@ -35,7 +33,6 @@ def handle_add(args: List[str], book: AddressBook) -> None:
         print_error(f"Error: {e}")
         return
 
-    # Запит на last name
     if yes_no_prompt("Do you want to add a last name? (y/n): "):
         while True:
             last_name_str = prompt_user("Enter last name (or leave empty to skip): ").strip()
@@ -47,7 +44,6 @@ def handle_add(args: List[str], book: AddressBook) -> None:
             except ValueError as e:
                 print_error(f"Invalid last name: {e}. Please try again.")
 
-    # Запит на email
     if yes_no_prompt("Do you want to add an email? (y/n): "):
         while True:
             email_str = prompt_user("Enter email (or leave empty to skip): ").strip()
@@ -59,7 +55,6 @@ def handle_add(args: List[str], book: AddressBook) -> None:
             except ValueError as e:
                 print_error(f"Invalid email: {e}. Please try again.")
 
-    # Запит на день народження
     if yes_no_prompt("Do you want to add a birthday? (y/n): "):
         while True:
             bday_str = prompt_user("Enter birthday (DD.MM.YYYY) (or leave empty to skip): ").strip()
@@ -71,9 +66,7 @@ def handle_add(args: List[str], book: AddressBook) -> None:
             except ValueError as e:
                 print_error(f"Invalid birthday: {e}. Please try again.")
 
-    # Додаємо повністю заповнений запис до книги в самому кінці
     book.add_record(record)
 
-    # Виводимо фінальне повідомлення про успіх
     print_title(f"Contact '{record.name.value}' was successfully added:")
     print(record)

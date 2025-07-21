@@ -19,5 +19,5 @@ class AddressBook:
     try:
         self.data.remove(record_to_delete)
         return True
-    except ValueError: # The record was not in the list
+    except ValueError:
         return False
